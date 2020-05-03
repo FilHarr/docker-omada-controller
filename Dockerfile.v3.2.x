@@ -1,12 +1,12 @@
 FROM ubuntu:18.04
 HEALTHCHECK --start-period=5m CMD wget --quiet --tries=1 --no-check-certificate http://127.0.0.1:8088 || exit 1
-MAINTAINER Matt Bentley <mbentley@mbentley.net>
+MAINTAINER Phil Harrison <phil@daftegg.uk>
 
 # install omada controller (instructions taken from install.sh); then create a user & group and set the appropriate file system permissions
 RUN \
   echo "**** Install Dependencies ****" &&\
   apt-get update &&\
-  DEBIAN_FRONTEND="noninteractive" apt-get install -y gosu net-tools tzdata wget &&\
+  DEBIAN_FRONTEND="noninteractive" apt-get install -y gosu net-tools tzdata wget authbind &&\
   rm -rf /var/lib/apt/lists/* &&\
   echo "**** Download Omada Controller ****" &&\
   cd /tmp &&\
