@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-HEALTHCHECK --start-period=5m CMD wget --quiet --tries=1 --no-check-certificate http://127.0.0.1:$HTTP_PORT || exit 1
+HEALTHCHECK --start-period=5m CMD /healthcheck.sh
 MAINTAINER Phil Harrison <phil@daftegg.uk>
 
 # install omada controller (instructions taken from install.sh); then create a user & group and set the appropriate file system permissions
@@ -36,7 +36,7 @@ RUN \
   mkdir /opt/tplink/EAPController/logs /opt/tplink/EAPController/work &&\
   chown -R omada:omada /opt/tplink/EAPController/data /opt/tplink/EAPController/logs /opt/tplink/EAPController/work
 
-COPY entrypoint.sh /entrypoint.sh
+COPY *.sh /
 
 WORKDIR /opt/tplink/EAPController
 EXPOSE 8088 8043 27001/udp 27002 29810/udp 29811 29812 29813
