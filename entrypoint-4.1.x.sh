@@ -1,4 +1,4 @@
-#!/bin/sh
+0#!/bin/sh
 
 set -e
 
@@ -31,11 +31,16 @@ set_port_property() {
     echo "WARNING: Unable to change '${1}' to ${3} after initial run; change the ports via the web UI"
   else
 
-    # check to see if we are trying to bind to privileged port
-    if [ "${3}" -lt "1024" ] && [ "$(cat /proc/sys/net/ipv4/ip_unprivileged_port_start)" = "1024" ]
+    # Check to see if using privileged port. If so touch and set ownership on authbind files
+    if [ "${3}" -lt "1024" ]
     then
-      echo "ERROR: Unable to set '${1}' to $3; 'ip_unprivileged_port_start' has not been set.  See https://github.com/mbentley/docker-omada-controller#unprivileged-ports"
-      exit 1
+      echo "Touching /etc/authbind/byport/${3}"
+      touch /etc/authbind/byport/${3}
+      echo "Setting ownership/permissions on /etc/authbind/byport/${3}"
+      chown 508:508 /etc/authbind/byport/${3}
+      chmod 770 /etc/authbind/byport/${3}
+      USE_AUTHBIND="true"
+      echo "Authbind will be used"
     fi
 
     echo "INFO: Setting '${1}' to ${3}"
@@ -137,4 +142,10 @@ then
 fi
 
 # run the actual command as the omada user
-exec gosu omada "${@}"
+# run with autobind if necessary
+if [ "$USE_AUTHBIND" = "true" ]
+then
+  exec gosu omada authbind "${@}"
+else
+  exec gosu omada "${@}"
+fi
