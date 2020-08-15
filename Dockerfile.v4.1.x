@@ -40,5 +40,5 @@ COPY *-4.1.x.sh /
 WORKDIR /opt/tplink/EAPController/lib
 EXPOSE 8088 8043 8843 27001/udp 27002 29810/udp 29811 29812 29813
 VOLUME ["/opt/tplink/EAPController/data","/opt/tplink/EAPController/work","/opt/tplink/EAPController/logs"]
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint-4.1.x.sh"]
 CMD ["/usr/bin/java","-server","-Xms128m","-Xmx1024m","-XX:MaxHeapFreeRatio=60","-XX:MinHeapFreeRatio=30","-XX:+HeapDumpOnOutOfMemoryError","-cp","/opt/tplink/EAPController/lib/*:","com.tplink.omada.start.OmadaLinuxMain"]
