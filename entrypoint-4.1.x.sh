@@ -30,21 +30,20 @@ set_port_property() {
   then
     echo "WARNING: Unable to change '${1}' to ${3} after initial run; change the ports via the web UI"
   else
-
-    # Check to see if using privileged port. If so touch and set ownership on authbind files
-    if [ "${3}" -lt "1024" ]
-    then
-      echo "Touching /etc/authbind/byport/${3}"
-      touch /etc/authbind/byport/${3}
-      echo "Setting ownership/permissions on /etc/authbind/byport/${3}"
-      chown 508:508 /etc/authbind/byport/${3}
-      chmod 770 /etc/authbind/byport/${3}
-      USE_AUTHBIND="true"
-      echo "Authbind will be used"
-    fi
-
     echo "INFO: Setting '${1}' to ${3}"
     sed -i "s/^${1}=${2}$/${1}=${3}/g" /opt/tplink/EAPController/properties/omada.properties
+  fi
+
+# Check to see if using privileged port. If so touch and set ownership on authbind files
+  if [ "${3}" -lt "1024" ]
+  then
+    echo "Touching /etc/authbind/byport/${3}"
+    touch /etc/authbind/byport/${3}
+    echo "Setting ownership/permissions on /etc/authbind/byport/${3}"
+    chown 508:508 /etc/authbind/byport/${3}
+    chmod 770 /etc/authbind/byport/${3}
+    USE_AUTHBIND="true"
+    echo "Authbind will be used"
   fi
 }
 
